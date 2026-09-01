@@ -1,27 +1,38 @@
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
+
 export default function Contact() {
+  const root = useRef<HTMLElement>(null)
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.contact-title span', {
+        yPercent: 110, opacity: 0, stagger: .06, duration: 1, ease: 'power4.out',
+        scrollTrigger: { trigger: root.current, start: 'top 70%', once: true }
+      })
+    }, root)
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section id="contact" className="mx-auto max-w-6xl px-6 py-24 md:px-12 md:py-32">
-      <p className="coord-label mb-4">Contact</p>
-      <h2 className="max-w-[16ch] text-4xl leading-tight text-graphite md:text-6xl">
-        Have a project in mind? Let's talk it through.
-      </h2>
-      <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
-        <a
-          href="mailto:you@example.com"
-          className="w-fit rounded-sm bg-graphite px-6 py-3 font-body text-sm text-paper transition-colors hover:bg-rust"
-        >
-          you@example.com
-        </a>
-        <div className="flex gap-6">
-          <a href="#" className="text-sm text-graphite/70 underline underline-offset-4 hover:text-graphite">
-            GitHub
-          </a>
-          <a href="#" className="text-sm text-graphite/70 underline underline-offset-4 hover:text-graphite">
-            LinkedIn
-          </a>
+    <footer ref={root} id="contact" className="contact">
+      <div className="section-shell contact-inner">
+        <span className="eyebrow">05 / CONTACT</span>
+        <h2 className="contact-title">
+          <span>Let's build</span>
+          <span className="accent-text">something useful.</span>
+        </h2>
+        <div className="contact-row">
+          <a className="contact-mail" href="mailto:infowithnadeem@gmail.com">infowithnadeem@gmail.com <span>↗</span></a>
+          <div className="socials">
+            <a href="https://github.com/nadeemM006" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://www.linkedin.com/in/muhammad-nadeem-240546389" target="_blank" rel="noreferrer">LinkedIn</a>
+          </div>
         </div>
+        <div className="footer-meta"><span>© 2026 MUHAMMAD NADEEM</span><span>AI / FULL-STACK / AUTOMATION</span><a href="#top">BACK TO TOP ↑</a></div>
       </div>
-      <p className="coord-label mt-24">© 2026 — built with React, Tailwind &amp; GSAP</p>
-    </section>
+    </footer>
   )
 }

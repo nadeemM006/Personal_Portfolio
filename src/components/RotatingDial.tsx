@@ -1,91 +1,64 @@
-import { useRef, useState, useCallback } from 'react'
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
 
-interface Facet {
-  label: string
-  detail: string
-}
-
-const FACETS: Facet[] = [
-  { label: 'Design', detail: 'Interfaces & systems' },
-  { label: 'Code', detail: 'React & TypeScript' },
-  { label: 'Motion', detail: 'GSAP & interaction' },
-  { label: 'Structure', detail: 'Layout & typography' },
-  { label: 'Build', detail: 'Performance & delivery' },
-  { label: 'Craft', detail: 'Detail & finish' },
+const POINTS = [
+  { label: 'AI', angle: -22, r: 110, offset: -6 },
+  { label: 'RAG', angle: 52, r: 128, offset: 2 },
+  { label: 'LLM', angle: 112, r: 96, offset: -3 },
+  { label: 'Python', angle: 178, r: 130, offset: 5 },
+  { label: 'React', angle: 242, r: 118, offset: -4 },
+  { label: 'Node', angle: 298, r: 104, offset: 3 },
+  { label: 'n8n', angle: 330, r: 140, offset: -2 },
 ]
 
-const RADIUS = 190
-
-/**
- * The signature moment of the page: a draggable, 360°-rotating instrument
- * standing in for a drafting compass. This is the one place the brief's
- * "3D visual design" and "360° interactive presentation" requirements are
- * spent — deliberately, rather than scattered as ambient motion elsewhere.
- */
 export default function RotatingDial() {
-  const [rotation, setRotation] = useState(-30)
-  const dragState = useRef<{ startX: number; startRotation: number } | null>(null)
-  const spinRef = useRef<number | null>(null)
+  const root = useRef<HTMLDivElement | null>(null)
 
-  const stopAutoSpin = useCallback(() => {
-    if (spinRef.current) {
-      window.clearInterval(spinRef.current)
-      spinRef.current = null
-    }
+  useEffect(() => {
+    // very subtle organic motion for points
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray<HTMLElement>('.orbit-point').forEach((el, i) => {
+        gsap.to(el, {
+          x: `+=${(i % 2 === 0 ? -1 : 1) * (Math.random() * 6 + 2)}px`,
+          y: `+=${(i % 3 === 0 ? -1 : 1) * (Math.random() * 4 + 1)}px`,
+          duration: 6 + Math.random() * 6,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+          delay: Math.random() * 2,
+        })
+      })
+      // one very slow ring rotation (near-imperceptible)
+      gsap.to(root.current, { rotate: 2.4, duration: 80, repeat: -1, yoyo: true, ease: 'sine.inOut' })
+    }, root)
+
+    return () => ctx.revert()
   }, [])
 
-  const onPointerDown = (e: React.PointerEvent) => {
-    stopAutoSpin()
-    ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
-    dragState.current = { startX: e.clientX, startRotation: rotation }
-  }
-
-  const onPointerMove = (e: React.PointerEvent) => {
-    if (!dragState.current) return
-    const delta = e.clientX - dragState.current.startX
-    setRotation(dragState.current.startRotation + delta * 0.4)
-  }
-
-  const onPointerUp = () => {
-    dragState.current = null
-  }
-
   return (
-    <div className="select-none">
-      <div
-        role="img"
-        aria-label={`Interactive rotating instrument. Facets: ${FACETS.map((f) => f.label).join(', ')}.`}
-        className="relative mx-auto h-[280px] w-[280px] cursor-grab touch-none active:cursor-grabbing"
-        style={{ perspective: '900px' }}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerLeave={onPointerUp}
-      >
-        <div
-          className="absolute inset-0 [transform-style:preserve-3d]"
-          style={{ transform: `rotateY(${rotation}deg) rotateX(-6deg)` }}
-        >
-          {FACETS.map((facet, i) => {
-            const angle = (360 / FACETS.length) * i
-            return (
-              <div
-                key={facet.label}
-                className="absolute inset-x-0 top-1/2 -mt-[70px] mx-auto flex h-[140px] w-[180px] flex-col items-center justify-center gap-1 rounded-sm border border-graphite/15 bg-paper/95"
-                style={{
-                  left: '50%',
-                  marginLeft: '-90px',
-                  transform: `rotateY(${angle}deg) translateZ(${RADIUS}px)`,
-                }}
-              >
-                <span className="font-display text-lg text-graphite">{facet.label}</span>
-                <span className="coord-label">{facet.detail}</span>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-      <p className="coord-label mt-4 text-center">drag to rotate — 6 facets</p>
+    <div ref={root} className="orbit-shell" aria-hidden>
+      <svg className="orbit-svg" width="360" height="360" viewBox="0 0 360 360" aria-hidden>
+        <g fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="1">
+          <circle cx="180" cy="180" r="158" />
+          <circle cx="180" cy="180" r="112" />
+          <circle cx="180" cy="180" r="72" />
+        </g>
+      </svg>
+
+      <div className="orbit-core-minor">MNL<span className="core-sub">AI</span></div>
+
+      {POINTS.map((p) => {
+        const rad = (p.angle * Math.PI) / 180
+        const x = 180 + Math.cos(rad) * p.r
+        const y = 180 + Math.sin(rad) * p.r
+        const style: React.CSSProperties = { left: x - 6, top: y - 6 }
+        return (
+          <div key={p.label} className="orbit-point" style={style}>
+            <span className="point-dot" />
+            <small className="point-label">{p.label}</small>
+          </div>
+        )
+      })}
     </div>
   )
 }

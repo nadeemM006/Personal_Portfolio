@@ -1,46 +1,63 @@
 export interface Project {
   id: string
-  index: string // e.g. "01" — used because these ARE a sequence, listed in order
+  index: string
   title: string
   summary: string
   role: string
   year: string
   stack: string[]
-  color: string // accent used for this project's panel
+  color: string
 }
 
 export const projects: Project[] = [
   {
-    id: 'northwind-dashboard',
+    id: 'mediflow-ai',
     index: '01',
-    title: 'Northwind Analytics Dashboard',
-    summary:
-      'A real-time operations dashboard for a logistics team, rebuilt around one question per screen instead of a wall of charts.',
-    role: 'Product design & frontend build',
-    year: '2025',
-    stack: ['React', 'TypeScript', 'D3', 'Tailwind CSS'],
-    color: '#3E6259',
+    title: 'MediFlow AI',
+    summary: 'An AI-powered hospital assistant for healthcare information, appointments, reports, prescriptions, and hospital services.',
+    role: 'AI / Full-Stack Project',
+    year: 'Featured',
+    stack: ['React', 'Node.js', 'PostgreSQL', 'Supabase', 'n8n', 'RAG', 'AI APIs'],
+    color: '#a78bfa',
   },
   {
-    id: 'fieldnote',
+    id: 'ayafind',
     index: '02',
-    title: 'Fieldnote — Research Capture App',
-    summary:
-      'A note-taking tool for field researchers that works offline first, syncing photos, audio, and geotags when connection returns.',
-    role: 'End-to-end design & development',
-    year: '2024',
-    stack: ['React Native', 'TypeScript', 'SQLite'],
-    color: '#B5533C',
+    title: 'AyaFind',
+    summary: 'An AI-powered platform designed to help users find and discover relevant services and information through an intelligent, user-friendly interface.',
+    role: 'AI / Frontend Project',
+    year: 'Featured',
+    stack: ['React', 'JavaScript', 'AI / LLMs', 'APIs'],
+    color: '#22d3ee',
   },
   {
-    id: 'atlas-commerce',
+    id: 'pucit-ai-hub',
     index: '03',
-    title: 'Atlas — Storefront Motion System',
-    summary:
-      'A scroll-driven product storytelling system for a homeware brand, built around restraint: one animated moment per page, not per element.',
-    role: 'Motion design & frontend implementation',
-    year: '2024',
-    stack: ['React', 'GSAP', 'Tailwind CSS'],
-    color: '#E8A33D',
+    title: 'PUCIT AI Hub',
+    summary: 'A centralized platform for BS-AI students to access courses, resources, faculty information, blogs, and academic content.',
+    role: 'Academic Platform',
+    year: 'Featured',
+    stack: ['HTML', 'CSS', 'JavaScript', 'React'],
+    color: '#f59e0b',
+  },
+  {
+    id: 'personal-ai-assistant',
+    index: '04',
+    title: 'Personal AI Assistant',
+    summary: 'An AI assistant integrating chat, email management, calendar events, tasks, notes, and expense tracking through automation workflows.',
+    role: 'AI / Automation Project',
+    year: 'Featured',
+    stack: ['Python', 'Streamlit', 'n8n', 'Webhooks', 'AI / LLMs'],
+    color: '#34d399',
+  },
+  {
+    id: 'mini-os',
+    index: '05',
+    title: 'Mini Operating System Simulation',
+    summary: 'A console-based operating system simulation featuring authentication, file management, terminal commands, calculator, notepad, games, and command history.',
+    role: 'Systems / C++ Project',
+    year: 'Featured',
+    stack: ['C++'],
+    color: '#fb7185',
   },
 ]
