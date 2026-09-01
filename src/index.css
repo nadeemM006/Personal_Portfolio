@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-graphite font-body antialiased;
+  }
+
+  ::selection {
+    @apply bg-amber/30;
+  }
+
+  :focus-visible {
+    outline: 2px solid theme('colors.rust');
+    outline-offset: 3px;
+  }
+
+  h1, h2, h3 {
+    @apply font-display;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Blueprint grid — a structural element, not decoration.
+   Used behind the hero and section dividers to mark measurement,
+   consistent with the "drafting table" concept. */
+.blueprint-grid {
+  background-image:
+    linear-gradient(theme('colors.line') 1px, transparent 1px),
+    linear-gradient(90deg, theme('colors.line') 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.coord-label {
+  @apply font-mono text-[11px] tracking-normal text-graphite/50;
+}
