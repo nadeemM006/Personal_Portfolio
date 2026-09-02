@@ -3,8 +3,10 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
-import Projects from './components/Projects'
 import About from './components/About'
+import Expertise from './components/Expertise'
+import Skills from './components/Skills'
+import Projects from './components/Projects'
 import Contact from './components/Contact'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -51,12 +53,18 @@ export default function App() {
     return () => ctx.revert()
   }, [loaded])
 
+  useEffect(() => {
+    if (!loaded) return
+    // Webfonts shift layout metrics after first paint — recalc pinned triggers.
+    document.fonts?.ready.then(() => ScrollTrigger.refresh())
+  }, [loaded])
+
   return (
     <>
       <div className={`preloader ${loaded ? 'is-done' : ''}`} aria-hidden={loaded}>
         <div className="preloader-inner">
-          <span className="eyebrow">INITIALIZING / MUHAMMAD NADEEM</span>
-          <strong>{progress}%</strong>
+          <span className="eyebrow">INITIALIZING / <strong>MUHAMMAD NADEEM</strong></span>
+          <strong className="preloader-count">{progress}%</strong>
           <div className="preloader-line"><span style={{ width: `${progress}%` }} /></div>
           <span className="preloader-foot">AI / CODE / AUTOMATION</span>
         </div>
@@ -68,9 +76,11 @@ export default function App() {
       <div className={`page-reveal ${loaded ? '' : 'page-hidden'}`}>
         <Nav />
         <main>
-          <Hero />
-          <Projects />
+          <Hero active={loaded} />
           <About />
+          <Expertise />
+          <Skills />
+          <Projects />
           <Contact />
         </main>
       </div>

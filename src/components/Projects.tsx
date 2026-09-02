@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { projects } from '../data/projects'
+import { IDENTITY } from '../data/portfolio'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -9,54 +10,51 @@ export default function Projects() {
   const root = useRef<HTMLElement>(null)
 
   useEffect(() => {
+    // Reduced-motion visitors skip the reveal — content stays visible.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.project-panel').forEach((panel, i) => {
-        gsap.from(panel.querySelector('.project-art'), {
-          scale: .78, rotate: i % 2 ? 3 : -3, opacity: 0,
-          scrollTrigger: { trigger: panel, start: 'top 78%', end: 'top 35%', scrub: 1 },
-        })
-        gsap.from(panel.querySelectorAll('.project-reveal'), {
-          y: 45, opacity: 0, stagger: .08,
-          scrollTrigger: { trigger: panel, start: 'top 72%', once: true },
-          duration: .8, ease: 'power3.out',
-        })
+      gsap.from('.proj-card', {
+        y: 44, opacity: 0, stagger: 0.09, duration: 0.75, ease: 'power3.out',
+        scrollTrigger: { trigger: '.proj-grid', start: 'top 80%', once: true },
+      })
+      gsap.from('.proj-head > *', {
+        y: 26, opacity: 0, stagger: 0.09, duration: 0.65, ease: 'power3.out',
+        scrollTrigger: { trigger: root.current, start: 'top 82%', once: true },
       })
     }, root)
     return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={root} id="work" className="projects section-shell">
-      <div className="section-heading">
-        <div><span className="eyebrow">04 / SELECTED PROJECTS</span><h2>Things <em>I</em> build.</h2></div>
-        <p>I explore AI, automation, full-stack development and practical digital products — turning ideas into useful software.</p>
-      </div>
+    <section ref={root} id="work" className="section projects">
+      <div className="shell">
+        <div className="proj-head">
+          <p className="section-label"><i className="label-sq" aria-hidden /> PORTFOLIO WORK</p>
+          <h2 className="proj-title" data-text="Featured Engineering Projects">
+            Featured Engineering Projects
+          </h2>
+        </div>
 
-      <div className="project-list">
-        {projects.map((project) => (
-          <article className="project-panel" key={project.id}>
-            <div className="project-index">{project.index}</div>
-            <div className="project-art" style={{ ['--accent' as string]: project.color }}>
-              <div className="art-window">
-                <div className="art-bar"><span /><span /><span /></div>
-                <div className="art-content">
-                  <div className="art-chart" />
-                  <div className="art-cards"><i /><i /><i /></div>
-                  <div className="art-lines"><b /><b /><b /><b /></div>
-                </div>
+        <div className="proj-grid">
+          {projects.map((project) => (
+            <article className="proj-card" key={project.id}>
+              <span className="proj-idx">{'//'} PROJECT #{project.index}</span>
+              <h3>{project.title}</h3>
+              <p>{project.summary}</p>
+              <div className="proj-tags">
+                {project.stack.slice(0, 4).map((tech) => (
+                  <span key={tech}>{tech}</span>
+                ))}
               </div>
-            </div>
-            <div className="project-info">
-              <span className="eyebrow project-reveal">{project.year} / {project.role}</span>
-              <h3 className="project-reveal">{project.title}</h3>
-              <p className="project-reveal">{project.summary}</p>
-              <div className="tag-row project-reveal">
-                {project.stack.map((tech) => <span key={tech}>{tech}</span>)}
+              <div className="proj-meta">
+                <span>{project.stack[0].toUpperCase()} | FEATURED</span>
+                <a href={IDENTITY.github} target="_blank" rel="noreferrer">
+                  View <span aria-hidden>↗</span>
+                </a>
               </div>
-              <a className="project-link project-reveal" href="#contact">Explore project <span>↗</span></a>
-            </div>
-          </article>
-        ))}
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   )

@@ -1,30 +1,25 @@
-import { useState, useEffect, useRef } from 'react'
-
-const LINKS = [
-  { href: '#work', label: 'Work' },
-  { href: '#about', label: 'About' },
-  { href: '#skills', label: 'Stack' },
-  { href: '#contact', label: 'Contact' },
-]
+import { useState, useEffect } from 'react'
+import { NAV_LINKS, IDENTITY } from '../data/portfolio'
 
 export default function Nav() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const root = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 28)
+    const onScroll = () => setScrolled(window.scrollY > 24)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (
-    <header ref={root} className={`site-nav ${scrolled ? 'scrolled' : ''}`}>
-      <a href="#top" className="brand" aria-label="Muhammad Nadeem">MNL<span>.</span></a>
+    <header className={`site-nav ${scrolled ? 'scrolled' : ''}`}>
+      <a href="#top" className="brand" aria-label={`${IDENTITY.name} — home`}>
+        {IDENTITY.brand}
+      </a>
 
-      <nav className={`nav-links ${open ? 'open' : ''}`}>
-        {LINKS.map((link) => (
+      <nav className={`nav-links ${open ? 'open' : ''}`} aria-label="Primary">
+        {NAV_LINKS.map((link) => (
           <a key={link.href} href={link.href} onClick={() => setOpen(false)}>
             {link.label}
           </a>
@@ -32,8 +27,13 @@ export default function Nav() {
       </nav>
 
       <div className="nav-actions">
-        <a className="nav-pill" href="mailto:infowithnadeem@gmail.com">Let's Talk <span>↗</span></a>
-        <button className="menu-button" onClick={() => setOpen(!open)} aria-label="Toggle menu">
+        <a className="hire-pill" href="#contact">Hire Me</a>
+        <button
+          className="menu-button"
+          onClick={() => setOpen(!open)}
+          aria-label="Toggle menu"
+          aria-expanded={open}
+        >
           <i /><i />
         </button>
       </div>
